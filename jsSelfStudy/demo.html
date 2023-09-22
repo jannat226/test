@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <style>
+      table,
+      th,
+      td {
+        border: 1px solid;
+      }
+    </style>
+    <div>
+      <button onclick="loadData()">Load Data</button>
+      <table id="books-table">
+        <tr>
+          <th>Book Name</th>
+          <th>Author</th>
+          <th>Publisher</th>
+        </tr>
+      </table>
+    </div>
+    <script>
+      function loadData() {
+        const table = document.getElementById("books-table");
+        fetch(
+          "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=Vq0zQ47foOFQXHxMeCPYCC4AJOZUPDA2"
+        )
+          .then((res) => {
+            res.json().then((data) => {
+              const results = data["results"]["books"];
+              results.forEach(
+                (element) =>
+                  (table.innerHTML += `<tr><td>${element["title"]}</td><td>${element["author"]}</td><td>${element["publisher"]}</td></tr>`)
+              );
+            });
+          })
+          .catch((err) => console.error(err));
+      }
+    </script>
+  </body>
+</html>
+</body>
+</html>

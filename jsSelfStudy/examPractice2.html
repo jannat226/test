@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab Exam Practice</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <script>
+    window.onload = () => {
+      const jokesApi = "https://v2.jokeapi.dev/joke/Any";
+      var jokeButton = document.getElementById("joke");
+      var jokeClearButton = document.getElementById("clearjoke");
+
+      jokeClearButton.addEventListener("click", () => {
+        document.getElementById("jokes-container").innerHTML = null;
+      });
+
+      jokeButton.addEventListener("click", async () => {
+        console.log("joke button is pressed");
+        await fetch(jokesApi)
+          .then((result) => {
+            result.json().then((data) => {
+              // console.log(data)
+              var newJoke = document.createElement("div");
+              newJoke.className = "single-item";
+              if (data.type === "single") {
+                newJoke.innerHTML = data.joke;
+              } else if (data.type === "twopart") {
+                newJoke.innerHTML = `${data.setup} . ${data.delivery}`;
+              }
+
+              if (data.flags.nsfw === true) {
+                newJoke.style.border = "2px solid red";
+                newJoke.style.backgroundColor = "#ffb1b1";
+              }
+
+              document.getElementById("jokes-container").appendChild(newJoke);
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+
+      // ------------------Dogs Api -----------------------------
+
+      const dogApi = "https://dog.ceo/api/breeds/image/random";
+      var dogButton = document.getElementById("dog");
+      var dogClearButton = document.getElementById("cleardog");
+
+      dogClearButton.addEventListener("click", () => {
+        document.getElementById("dog-container").innerHTML = null;
+      });
+
+      dogButton.addEventListener("click", async () => {
+        console.log("Dog button is pressed");
+        await fetch(dogApi)
+          .then((res) => {
+            res.json().then((data) => {
+              // console.log(data)
+              var newdog = document.createElement("img");
+              newdog.className = "item-image";
+              newdog.src = data.message;
+              document.getElementById("dog-container").innerHTML = null;
+              document.getElementById("dog-container").appendChild(newdog);
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+
+      // --------------------Exhange Rates Api-------------------------------
+
+      // const exchangeApi = "https://api.apilayer.com/exchangerates_data/latest?base=USD"
+
+      var myHeaders = new Headers();
+      myHeaders.append("apikey", "0h399deSlkFvh7EGq6XRKVJVoUIAbpoQ");
+
+      var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+        headers: myHeaders,
+      };
+      var exchangeButton = document.getElementById("exchange");
+      var exchangeClearButton = document.getElementById("clearexchange");
+
+      exchangeClearButton.addEventListener("click", () => {
+        document.getElementById("exchangebody").innerHTML = null;
+      });
+
+      var exchangeRates = {};
+      exchangeButton.addEventListener("click", async () => {
+        exchangeRates = {};
+        document.getElementById("exchangebody").innerHTML = null;
+        console.log("Exchange button was clicked");
+        var base = document.getElementById("base").value;
+        const exchangeApi = `https://api.apilayer.com/exchangerates_data/latest?base=${base}`;
+        await fetch(exchangeApi, requestOptions)
+          .then((res) => {
+            res.json().then((data) => {
+              // console.log(data);
+              exchangeRates = data.rates;
+              // console.log(exchangeRates);
+              for (const key in exchangeRates) {
+                var row = document.createElement("tr");
+                var countryCode = document.createElement("td");
+                countryCode.innerHTML = key;
+                var rate = document.createElement("td");
+                rate.innerHTML = exchangeRates[key];
+                row.appendChild(countryCode);
+                row.appendChild(rate);
+                document.getElementById("exchangebody").appendChild(row);
+                // console.log(`${key} ---- ${exchangeRates[key]}`);
+              }
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+
+      // -------------Books API---------------------------
+
+      const bookAPI =
+        "https://api.nytimes.com/svc/books/v3/lists/2019-01-20/hardcover-fiction.json?api-key=QTd4H7HDVpLKhqIqtV42NmAthrt8ub4b";
+      var bookButton = document.getElementById("books");
+      var clearBookButton = document.getElementById("clearbook");
+
+      clearBookButton.addEventListener("click", () => {
+        document.getElementById("bookbody").innerHTML = null;
+      });
+
+      var bookList = [];
+      bookButton.addEventListener("click", async () => {
+        bookList = [];
+        console.log("Book Button Pressed");
+        await fetch(bookAPI)
+          .then((res) => {
+            res.json().then((data) => {
+              bookList = data.results.books;
+              // console.log(bookList)
+              for (let i = 0; i < bookList.length; i++) {
+                var row = document.createElement("tr");
+                var title = document.createElement("td");
+                title.innerHTML = bookList[i].title;
+                var author = document.createElement("td");
+                author.innerHTML = bookList[i].author;
+                var desc = document.createElement("td");
+                desc.innerHTML = bookList[i].description;
+                var bookimage = document.createElement("td");
+                var image = document.createElement("img");
+                image.src = bookList[i].book_image;
+                image.width = "100";
+                image.height = "100";
+                bookimage.appendChild(image);
+                row.appendChild(title);
+                row.appendChild(author);
+                row.appendChild(desc);
+                row.appendChild(bookimage);
+                document.getElementById("bookbody").append(row);
+              }
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    };
+  </script>
+  <body>
+    <!-- ----------------------------------------------------- -->
+
+    <div class="container-header">Random Joke</div>
+    <div>API takes a few seconds to load data please wait</div>
+    <button class="fetch-button" id="joke">New joke</button>
+    <button class="fetch-button" id="clearjoke">Clear All Jokes</button>
+    <!-- Jokes in A container -->
+    <div class="items-container" id="jokes-container"></div>
+
+    <!-- ----------------------------------------------------- -->
+
+    <div class="container-header">Random Dog image</div>
+    <div>API takes a few seconds to load data please wait</div>
+
+    <button class="fetch-button" id="dog">New Dog</button>
+    <button class="fetch-button" id="cleardog">Clear Dog Image</button>
+    <!-- Random Dog image in A Container -->
+    <div class="items-container" id="dog-container"></div>
+
+    <!-- ---------------------------------------------------- -->
+
+    <div class="container-header">Exchange Rates</div>
+    <div>API takes a few seconds to load data please wait</div>
+
+    <!-- Exchange Rates in A Container -->
+    <button class="fetch-button" id="exchange">Get Exhange Rates</button>
+    <button class="fetch-button" id="clearexchange">
+      Clear Exchange Rates
+    </button>
+    <div class="items-container">
+      <span>
+        <div>Base</div>
+        <select name="base" id="base">
+          <option value="USD" selected>1 US Dollar</option>
+          <option value="INR">1 Indian Rupee</option>
+          <option value="EUR">1 Euro</option>
+          <option value="AUD">1 Australian Dollar</option>
+          <option value="AED">1 Dirham</option>
+        </select>
+      </span>
+      <table id="exchange-container">
+        <thead>
+          <th>Country Code</th>
+          <th>Exchange Rate</th>
+        </thead>
+        <tbody class="tbody" id="exchangebody"></tbody>
+      </table>
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+
+    <div class="container-header">Book List</div>
+    <div>API takes a few seconds to load data please wait</div>
+
+    <!-- Books in A Container -->
+    <button class="fetch-button" id="books">Get Books</button>
+    <button class="fetch-button" id="clearbook">Clear Book List</button>
+    <div class="items-container" id="books-container">
+      <table id="books-container">
+        <thead>
+          <th>Title</th>
+          <th>Author Name</th>
+          <th>Description</th>
+          <th>Image</th>
+        </thead>
+        <tbody class="tbody" id="bookbody"></tbody>
+      </table>
+    </div>
+
+    <!-- ---------------------------------------------------- -->
+  </body>
+</html>

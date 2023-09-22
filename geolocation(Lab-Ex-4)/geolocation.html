@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../20230801_WSDA2_portfolio/css/home.css">
+    <script
+      type="text/javascript"
+      src="https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AnCJBPxbRs9A31N2sOmynMefdJHCBaFquKgWtJm7OVyrn8Zc58znWrmHbhaWtEQQ"
+      async
+      defer
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topnav" id="myTopnav">
+      <img class="logo" src="../20230801_WSDA2_portfolio/css/Screenshot 2023-08-04 at 10.22.35 PM.png">
+      <a style="text-decoration:none" href="../html/home.html" >Home</a>
+      <a style="text-decoration:none" href="../html/about.html">About</a>
+      <a  style="text-decoration:none" href="../html/skill&Exp.html">Skills & Experiences</a>
+      <a  style="text-decoration:none" href="../html/photoGallery.html">Photo Gallery</a>
+      <!-- <a href="../html/register.html">Register</a> -->
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    </div>
+    
+    <div
+      class="container mx-auto bg-slate-900"
+      style="position: relative; height: 100vh"
+    >
+      <div id="myMap" style="height: 90%"></div>
+      <script>
+        window.addEventListener("load", () => {
+          let map = new Microsoft.Maps.Map("#myMap", {
+            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            zoom: 15,
+          });
+          let currentPin;
+          navigator.geolocation.watchPosition((pos) => {
+            map.entities.remove(currentPin);
+            currentPin = new Microsoft.Maps.Pushpin(
+              new Microsoft.Maps.Location(
+                pos.coords.latitude,
+                pos.coords.longitude
+              ),
+              {
+                title: "Current Location",
+                icon: "./pin.svg",
+              }
+            );
+            map.entities.push(currentPin);
+          });
+        });
+      </script>
+    </div>
+    
+  </body>
+</html>
